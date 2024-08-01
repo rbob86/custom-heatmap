@@ -1,6 +1,6 @@
 # Looker Custom Visualization Boilerplate
 
-A repo for getting started with custom visualizations that includes a Highcharts example integration.
+A repo for getting started with custom visualizations that includes a Custom Heatmap example integration.
 
 ## Installation
 

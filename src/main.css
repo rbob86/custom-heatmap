@@ -1,13 +1,105 @@
-.top-bar {
+.info.legend {
+  background-color: #fff;
+  padding: 6px 8px;
+  font-family: Helvetica, sans-serif;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.label-container {
+  margin-bottom: 3px;
+}
+
+.label-container .label {
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.gradient-container {
   display: flex;
-  margin-bottom: 20px;
+  width: 100%;
+  min-width: 150px;
+  height: 8px;
+  margin-bottom: 5px;
+}
+
+.gradient-container span {
+  flex: 1;
+}
+
+.values-container {
+  display: flex;
   justify-content: space-between;
 }
 
-.title {
+.values-container .value {
+  font-size: 11px;
+  color: #444;
+}
+
+.custom-tooltip {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  font-family: Helvetica, sans-serif;
+  font-size: 12px;
+  color: #333;
+  z-index: 999;
+}
+
+.custom-tooltip::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid white;
+  left: -6px;
+  /* Position arrow on the left side */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+.custom-tooltip.positioned-left::before {
+  /* Position arrow on the right side */
+  border-right: none;
+  border-left: 6px solid white;
+  left: auto;
+  right: -6px;
+  transform: translateY(-50%);
+}
+
+.tooltip-region {
+  margin: 0 0 6px 0;
+}
+
+.tooltip-region,
+.tooltip-value-label {
+  font-weight: bold;
+}
+
+.tooltip-value-label,
+.tooltip-value {
   margin: 0;
-  font-size: 18px;
-  font-weight: normal;
-  font-family: 'Google Sans';
-  text-align: center;
+}
+
+/* .leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+  border: none !important;
+} */
+
+/* .leaflet-container path.leaflet-interactive:focus:not(:focus-visible) {
+  outline: none !important;
+} */
+
+.leaflet-container path.leaflet-interactive:focus {
+  outline: none !important;
 }
