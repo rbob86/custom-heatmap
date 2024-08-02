@@ -102,7 +102,7 @@ looker.plugins.visualizations.add({
   },
 
   create: function (element, config) {
-    element.innerHTML = `<div id="map" style="width: 100%; height: 100%;"></div>`;
+    element.innerHTML = `<div id="map" class="map-container"></div>`;
 
     const mapElement = document.getElementById('map')
     mapElement.style.width = '100%'
@@ -251,12 +251,12 @@ looker.plugins.visualizations.add({
 
           // Show tooltip on mouseover
           layer.on('mouseover', function () {
-            tooltipElement.style.visibility = 'visible';
+            tooltipElement.style.display = 'block';
           });
 
           // Hide tooltip on mouseout
           layer.on('mouseout', function () {
-            tooltipElement.style.visibility = 'hidden';
+            tooltipElement.style.display = 'none';
           });
 
           // Prevent the tooltip from snapping back on click

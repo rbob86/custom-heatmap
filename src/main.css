@@ -1,3 +1,9 @@
+.map-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .info.legend {
   background-color: #fff;
   padding: 6px 8px;
@@ -39,7 +45,7 @@
 
 .custom-tooltip {
   position: absolute;
-  visibility: hidden;
+  display: none;
   pointer-events: none;
   padding: 8px;
   background-color: #fff;
@@ -88,17 +94,6 @@
 .tooltip-value {
   margin: 0;
 }
-
-/* .leaflet-tooltip-top:before,
-.leaflet-tooltip-bottom:before,
-.leaflet-tooltip-left:before,
-.leaflet-tooltip-right:before {
-  border: none !important;
-} */
-
-/* .leaflet-container path.leaflet-interactive:focus:not(:focus-visible) {
-  outline: none !important;
-} */
 
 .leaflet-container path.leaflet-interactive:focus {
   outline: none !important;
