@@ -54,7 +54,7 @@
   font-family: Helvetica, sans-serif;
   font-size: 12px;
   color: #333;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .custom-tooltip::before {
@@ -69,7 +69,6 @@
   /* Position arrow on the left side */
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1001;
 }
 
 .custom-tooltip.positioned-left::before {
@@ -97,4 +96,23 @@
 
 .leaflet-container path.leaflet-interactive:focus {
   outline: none !important;
+}
+
+.custom-popup {
+  padding: 0;
+}
+
+.custom-popup h4 {
+  margin: 0 0 8px 0;
+}
+
+.custom-popup ul {
+  margin: 5px 0 0 0;
+  padding-left: 15px;
+}
+
+.custom-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgb(42, 127, 192);
 }

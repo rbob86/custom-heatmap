@@ -126,6 +126,17 @@ looker.plugins.visualizations.add({
     }).addTo(this.map)
 
     this.geojsonLayer = null
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('custom-link')) {
+
+        const parentOrigin = '*'
+        const href = e.target.dataset.href
+        const message = `custom-heatmap:::${href}`
+
+        window.top.postMessage(message, parentOrigin)
+      }
+    })
   },
 
   updateAsync: function (data, element, config, queryResponse, details, done) {
@@ -135,9 +146,6 @@ looker.plugins.visualizations.add({
       const country = row[config.query_fields.dimensions[0].name].value
       countriesInData.add(country)
     })
-
-    console.log(data)
-    console.log(queryResponse)
 
     // Filter GeoJSON for Relevant Countries
     const filteredGeoData = {
@@ -150,9 +158,12 @@ looker.plugins.visualizations.add({
     let minValue = Infinity
     let maxValue = -Infinity
     data.forEach(row => {
-      const country = row[config.query_fields.dimensions[0].name].value
-      const value = row[config.query_fields.measures[0].name].value
-      countryData[country] = value
+      const dimension = row[config.query_fields.dimensions[0].name]
+      const country = dimension.value
+      const links = 'links' in dimension ? dimension.links : null
+      const { html, value } = row[config.query_fields.measures[0].name]
+      const rendered = html ?? value.toLocaleString()
+      countryData[country] = { value, rendered, links }
       if (value < minValue) minValue = value
       if (value > maxValue) maxValue = value
     })
@@ -167,12 +178,10 @@ looker.plugins.visualizations.add({
 
     // Style Function
     function style(feature) {
-      let value = countryData[feature.properties.name];
-      if (typeof value === 'undefined') {
-        value = countryData[feature.properties.name2];
-      }
-
-      const hasData = value !== undefined;
+      const countryProperties = countryData[feature.properties.name] ?? countryData[feature.properties.name2];
+      const value = countryProperties?.value;
+      const rendered = countryProperties?.rendered;
+      const hasData = countryProperties !== undefined;
 
       if (hasData) {
         const baseStyle = {
@@ -188,7 +197,7 @@ looker.plugins.visualizations.add({
           tooltipContent += `<p class="tooltip-region" style="color: ${tooltipRegionColor}">${feature.properties.name}</p>`;
         }
         const measureLabel = config.show_full_measure_name ? config.query_fields.measures[0].label : config.query_fields.measures[0].label_short;
-        tooltipContent += `<p class="tooltip-value-label">${measureLabel}</p><p class="tooltip-value">${value.toLocaleString()}</p>`;
+        tooltipContent += `<p class="tooltip-value-label">${measureLabel}</p><p class="tooltip-value">${rendered}</p>`;
         feature.properties.tooltipContent = tooltipContent;
 
         return baseStyle
@@ -235,7 +244,7 @@ looker.plugins.visualizations.add({
             const windowWidth = window.innerWidth;
 
             let left = pos.pageX + 20;
-            let top = pos.pageY - 20;
+            let top = pos.pageY - 30;
 
             // Check if the tooltip is too close to the right edge of the window
             if (pos.pageX + tooltipWidth + 20 > windowWidth) {
@@ -261,20 +270,31 @@ looker.plugins.visualizations.add({
 
           // Prevent the tooltip from snapping back on click
           layer.on('click', function (e) {
-            const countryName = feature.properties.name in countryData ? feature.properties.name : feature.properties.name2
-            const row = {
-              [config.query_fields.dimensions[0].name]: { value: countryName }
-            }
+            tooltipElement.style.display = 'none';
 
-            if (details.crossfilterEnabled) {
-              LookerCharts.Utils.toggleCrossfilter({
-                row,
-              });
+            const countryName = feature.properties.name in countryData ? feature.properties.name : feature.properties.name2
+            const links = countryData[countryName].links
+
+            if (links && links.length > 0) {
+              const popupContent = `
+                <div class="custom-popup">
+                  <h4>${countryName}</h4>
+                  <ul>
+                    ${links.map(link => `<li><span class="custom-link" data-href="${link.url}">${link.label}</span></li>`).join('')}
+                  </ul>
+                </div>
+              `;
+
+              // Create and open the popup
+              L.popup()
+                .setLatLng(e.latlng)
+                .setContent(popupContent)
+                .openOn(this.map);
             }
 
             e.originalEvent.preventDefault();
             e.originalEvent.stopPropagation();
-          });
+          }, this);
 
           // Remove tooltip element when the layer is removed
           layer.on('remove', () => {
