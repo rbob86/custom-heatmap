@@ -4,6 +4,20 @@ import L from 'leaflet'
 import geoData from './countries-geojson.json'
 import chroma from 'chroma-js'
 
+function formatNumber(num) {
+  const absNum = Math.abs(num);
+
+  if (absNum >= 1e9) {
+    return (num / 1e9).toFixed(2) + 'B';
+  } else if (absNum >= 1e6) {
+    return (num / 1e6).toFixed(2) + 'M';
+  } else if (absNum >= 1e3) {
+    return (num / 1e3).toFixed(2) + 'K';
+  } else {
+    return num.toString();
+  }
+}
+
 looker.plugins.visualizations.add({
   id: "custom_heatmap",
   label: "Custom Heatmap",
@@ -328,8 +342,8 @@ looker.plugins.visualizations.add({
 
       // Add values to the values container
       valuesContainer.innerHTML = `
-          <span class="value min">${minValue.toLocaleString()}</span>
-          <span class="value max">${maxValue.toLocaleString()}</span>
+          <span class="value min">${formatNumber(minValue)}</span>
+          <span class="value max">${formatNumber(maxValue)}</span>
       `;
 
       return div;
